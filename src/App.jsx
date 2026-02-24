@@ -1,13 +1,8 @@
-import { useState } from 'react'
-import Hero from './components/hero/hero';
-import './App.css'
+import Hero from './components/hero/Hero.jsx';
+import './App.css';
 
 function App() {
-  return (
-    <>
-      <Hero/>
-    </>
-  )
+  return <Hero />;
 }
 
 export default App

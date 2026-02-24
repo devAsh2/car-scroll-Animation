@@ -1,5 +1,5 @@
-import Car from "./car";
-import Trail from "./trail";
+import Car from "./Car.jsx";
+import Trail from "./Trail.jsx";
 import ValueText from "./ValueText";
 import StatsBoxes from "./StatsBoxes";
 import useHeroAnimation from "./useHeroAnimation";
