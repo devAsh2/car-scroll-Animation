@@ -3,8 +3,12 @@ name: Deploy Vite React App
 on:
   push:
     branches:
-      - main  # deploy when pushing to main
+      - main
+    # deploy when pushing to main
 
+permissions: 
+  contents: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
