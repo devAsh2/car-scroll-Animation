@@ -1,27 +1,30 @@
 import Car from "./car";
 import Trail from "./trail";
 import ValueText from "./ValueText";
-import { TopStatsRow, BottomStatsRow } from "./StatsBoxes";
+import StatsBoxes from "./StatsBoxes";
 import useHeroAnimation from "./useHeroAnimation";
 
 function Hero() {
   useHeroAnimation();
 
   return (
-    <div id="hero-section" className="h-[200vh] bg-[#d6d6d6] text-black">
-      <div className="h-screen flex items-center justify-center relative overflow-hidden">
-        <div className="w-full  px-6">
-          <TopStatsRow />
-
-          <div className="mt-10 mb-10">
-            <div className="w-full h-[200px] bg-[#1e1e1e] relative overflow-hidden">
+    <div
+      id="hero-section"
+      className="h-[200vh] bg-[#E9EEF3] text-[#0D1117]"
+    >
+      <div
+        id="hero-track"
+        className="h-screen flex items-center justify-center relative overflow-hidden"
+      >
+        <div className="w-full px-8">
+          <div className="mt-12 mb-12">
+            <div className="w-full h-[220px] bg-[#0F172A] relative overflow-hidden rounded-xl shadow-[0_20px_60px_rgba(2,6,23,0.18)]">
               <Trail />
               <Car />
               <ValueText />
             </div>
           </div>
-
-          <BottomStatsRow />
+          <StatsBoxes />
         </div>
       </div>
     </div>

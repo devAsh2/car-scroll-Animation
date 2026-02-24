@@ -6,94 +6,137 @@ export default function useHeroAnimation() {
     const ScrollTrigger = window.ScrollTrigger;
 
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize" });
 
     const car = document.getElementById("car");
     const trail = document.getElementById("trail");
     const letters = gsap.utils.toArray(".value-letter");
+    const valueAdd = document.querySelector(".value-add");
 
-    if (!car || !trail || !letters.length) return;
+    if (!car || !trail || !letters.length || !valueAdd) return;
 
     const road = car.parentElement;
-    const roadRect = road ? road.getBoundingClientRect() : null;
-    const initialCarRect = car.getBoundingClientRect();
+    let roadWidth = 0;
+    let roadLeft = 0;
+    let carWidth = 150;
+    let endX = 0;
+    let valueLeftInRoad = 0;
+    let letterOffsets = [];
 
-    const roadWidth = roadRect?.width || window.innerWidth;
-    const carWidth = initialCarRect.width || 150;
-    const endX = Math.max(0, roadWidth - carWidth);
+    const measure = () => {
+      if (!road) return;
+      const roadRect = road.getBoundingClientRect();
+      const carRect = car.getBoundingClientRect();
+      const valueRect = valueAdd.getBoundingClientRect();
 
-    const tl = gsap.timeline({
+      roadWidth = roadRect.width || window.innerWidth;
+      roadLeft = roadRect.left || 0;
+      carWidth = carRect.width || 150;
+      endX = Math.max(0, roadWidth - carWidth / 2);
+      valueLeftInRoad = Math.max(valueRect.left - roadLeft, 0);
+      letterOffsets = letters.map((letter) => letter.offsetLeft);
+    };
+
+    measure();
+
+    const carTween = gsap.to(car, {
+      x: () => endX,
+      ease: "none",
       scrollTrigger: {
         trigger: "#hero-section",
         start: "top top",
         end: "bottom top",
         scrub: true,
-        pin: true,
-        pinSpacing: false,
+        pin: "#hero-track",
+        onRefresh: () => {
+          measure();
+          ScrollTrigger.update();
+        },
         onUpdate: () => {
-          const currentRoadRect = road ? road.getBoundingClientRect() : null;
-          const carRect = car.getBoundingClientRect();
-
-          const roadLeft = currentRoadRect?.left || 0;
-          const roadWidthNow = currentRoadRect?.width || roadWidth;
-          const carCenterX = carRect.left + carRect.width / 2;
-
-          const trailWidth = Math.min(
-            Math.max(carCenterX - roadLeft, 0),
-            roadWidthNow
-          );
+          const carX = gsap.getProperty(car, "x") + carWidth / 2;
+          const trailWidth = Math.min(Math.max(carX, 0), roadWidth);
           gsap.set(trail, { width: trailWidth });
 
-          letters.forEach((letter) => {
-            const rect = letter.getBoundingClientRect();
-            letter.style.opacity = carCenterX >= rect.left ? 1 : 0;
+          letters.forEach((letter, i) => {
+            const letterX = valueLeftInRoad + (letterOffsets[i] || 0);
+            letter.style.opacity = carX >= letterX ? 1 : 0;
           });
         },
       },
     });
 
-    tl.to(
-      car,
-      {
-        x: endX,
-        ease: "none",
+    const box1Tween = gsap.to("#box1", {
+      scrollTrigger: {
+        trigger: "#hero-section",
+        start: "top+=100 top",
+        end: "top+=300 top",
+        toggleActions: "play none none reverse",
       },
-      0
-    );
+      duration: 0.7,
+      ease: "power2.out",
+      opacity: 1,
+    });
 
-    tl.to(
-      "#box1",
-      {
-        opacity: 1,
+    const box2Tween = gsap.to("#box2", {
+      scrollTrigger: {
+        trigger: "#hero-section",
+        start: "top+=400 top",
+        end: "top+=600 top",
+        toggleActions: "play none none reverse",
       },
-      0.05
-    );
-    tl.to(
-      "#box2",
-      {
-        opacity: 1,
+      duration: 0.7,
+      ease: "power2.out",
+      opacity: 1,
+    });
+
+    const box3Tween = gsap.to("#box3", {
+      scrollTrigger: {
+        trigger: "#hero-section",
+        start: "top+=700 top",
+        end: "top+=900 top",
+        toggleActions: "play none none reverse",
       },
-      0.15
-    );
-    tl.to(
-      "#box3",
-      {
-        opacity: 1,
+      duration: 0.7,
+      ease: "power2.out",
+      opacity: 1,
+    });
+
+    const box4Tween = gsap.to("#box4", {
+      scrollTrigger: {
+        trigger: "#hero-section",
+        start: "top+=1100 top",
+        end: "top+=1300 top",
+        toggleActions: "play none none reverse",
       },
-      0.2
-    );
-    tl.to(
-      "#box4",
-      {
-        opacity: 1,
-      },
-      1
-    );
+      duration: 0.7,
+      ease: "power2.out",
+      opacity: 1,
+    });
+
+    const syncScrollPosition = () => {
+      if (!carTween.scrollTrigger) return;
+      ScrollTrigger.refresh(true);
+    };
+
+    requestAnimationFrame(syncScrollPosition);
+    const onPageShow = () => setTimeout(syncScrollPosition, 0);
+    const onLoad = () => setTimeout(syncScrollPosition, 0);
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("load", onLoad);
 
     return () => {
-      if (tl.scrollTrigger) {
-        tl.scrollTrigger.kill();
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("load", onLoad);
+      if (carTween.scrollTrigger) {
+        carTween.scrollTrigger.kill();
       }
-      tl.kill();
+      carTween.kill();
+      [box1Tween, box2Tween, box3Tween, box4Tween].forEach((tween) => {
+        if (tween.scrollTrigger) {
+          tween.scrollTrigger.kill();
+        }
+        tween.kill();
+      });
     };
   }, []);
 }

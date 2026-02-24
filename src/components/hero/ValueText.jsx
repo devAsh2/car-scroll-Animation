@@ -1,13 +1,22 @@
 export default function ValueText() {
-    const text = "WELCOME ITZFIZZ";
-  
-    return (
-      <div className="absolute top-[30%] left-[5%] text-7xl font-bold flex gap-1 z-20">
-        {text.split("").map((letter, i) => (
-          <span key={i} className="value-letter opacity-0">
-            {letter}
+  const text = "WELCOME ITZFIZZ";
+
+  return (
+    <div className="value-add absolute top-[30%] left-1/2 -translate-x-1/2 text-[92px] font-semibold flex gap-3 tracking-[0.18em] text-[#0F172A] z-0">
+      {text.split("").map((letter, i) => {
+        const isSpace = letter === " ";
+
+        return (
+          <span
+            key={i}
+            className={`value-letter opacity-0 inline-block ${
+              isSpace ? "w-6" : ""
+            }`}
+          >
+            {isSpace ? "" : letter}
           </span>
-        ))}
-      </div>
-    );
-  }
+        );
+      })}
+    </div>
+  );
+}
