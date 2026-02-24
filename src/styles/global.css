@@ -1,0 +1,25 @@
+/* Reset improvements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Prevent horizontal scroll caused by GSAP transforms */
+  html,
+  body {
+    overflow-x: hidden;
+    background-color: #121212;
+    font-family: sans-serif;
+  }
+  
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Optional: better image rendering */
+  img {
+    display: block;
+    max-width: 100%;
+  }
